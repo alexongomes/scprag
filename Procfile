@@ -1,0 +1,1 @@
+web: gunicorn testeprojeto3.wsgi
