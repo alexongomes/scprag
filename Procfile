@@ -1,1 +1,1 @@
-web: gunicorn testeprojeto3.wsgi
+web: gunicorn testeProjeto3.wsgi
