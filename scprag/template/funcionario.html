@@ -1,0 +1,91 @@
+{% extends "modelPage.html" %}
+
+{% block content %}
+    <h2>Gerenciar Funcionários</h2>
+    <div align="right">
+        <a href="/cadastrar_funcionario/">
+            <button type="button">Cadastrar Funcionário</button>
+        </a>
+    </div>
+    <div>
+        <strong>Filtros: </strong><label id="resultado"></label>
+
+
+<script type="3f8605136b33ed85c8ad5979-text/javascript">
+
+window.onload = CapturaParametrosUrl();
+
+/*
+	Captura parâmetros de URL com JS
+	Créditos: http://profanderson.blog.etecarmine.com.br/
+*/
+
+function CapturaParametrosUrl() {
+
+    //captura a url da página
+    var url = window.location.href;
+
+
+	//tenta localizar o ?
+    var res = url.split('?');
+
+	if (res[1] === undefined) {
+
+    }
+
+    if (res[1] !== undefined) {
+		//tenta localizar os & (pode haver mais de 1)
+        var parametros = res[1].split('&');
+
+
+		//qtd. de parâmetros que serão tratados pelo laço.
+		var qtdParametrosParaLer = 5;
+
+		//guarda o nome dos parâmetros e os valores e, vetores.
+		var parametroEncontrado = new Array();
+		var valorParametro = new Array();
+
+		for (var cont = 0; cont<=qtdParametrosParaLer; cont++)
+		{
+			if (parametros[cont] !== undefined)
+			{
+				captura = parametros[cont].split('=');
+
+				parametroEncontrado[cont] = captura[0];
+				valorParametro[cont] = captura[1];
+                if (valorParametro[cont] !== '')
+                {
+				    document.getElementById('resultado').innerHTML += parametroEncontrado[cont] + '=' + valorParametro[cont] + '  +   ';
+				}
+			}
+		}
+    }
+}
+</script><script src="https://ajax.cloudflare.com/cdn-cgi/scripts/7089c43e/cloudflare-static/rocket-loader.min.js" data-cf-settings="3f8605136b33ed85c8ad5979-|49" defer=""></script>
+
+
+
+        <br><br>
+        Data de nascimento:
+        <form action="/filtro_funcionario/" method="GET">
+            <input type="date" name="dt1"> a <input type="date" name="dt2">
+            <label for="nome">Nome:</label>
+            <input type="text" id="nome" name="nome">
+            <button type="submit">Filtrar</button>
+        </form>
+        <br> <br>
+    </div>
+
+    <ul>
+        {% for funcionario in funcionarios %}
+            <li>{{ funcionario.NOME }} - {{ funcionario.EMAIL }} - {{ funcionario.DATA_NASCIMENTO }}
+                <select>
+                    {% for fone in funcionario.TELEFONE.all %}
+                        <option>{{ fone.TELEFONE }}</option>
+                    {% endfor %}
+                </select>
+                ( <a href="/cadastrar_funcionario/?id={{funcionario.id}}">Editar</a> / <a href="/cadastrar_funcionario/delete/{{funcionario.id}}/"> Excluir </a>)
+            </li>
+        {% endfor %}
+    </ul>
+{% endblock %}

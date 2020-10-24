@@ -1,0 +1,35 @@
+{% extends "modelPage.html" %}
+
+{% block content %}
+    <h2>Cadastrar Funcionário</h2>
+    <br><br>
+ <div id="content-main">
+    <form method="post" action="submit">{% csrf_token %}
+        <div>
+            <input value="{{funcionario.id}}" type="number" name="id_funcionario" maxlength="20" hidden>
+            <label class="required" for="NOME">NOME:</label><br>
+            <input value="{{funcionario.NOME}}" type="text" name="NOME" class="vTextField" maxlength="100" required id="NOME">
+            <br><br>
+            <label for="EMAIL">EMAIL:</label><br>
+            <input value="{{funcionario.EMAIL}}" type="email" name="EMAIL" class="vTextField" maxlength="50" id="EMAIL">
+            <br><br>
+            <label for="DATA_NASCIMENTO">DATA NASCIMENTO:</label><br>
+            <input value="{{funcionario.getDATA_NASCIMENTO}}" type="date" name="DATA_NASCIMENTO" class="vDateField" size="10" id="DATA_NASCIMENTO">
+            <br><br>
+
+            <label>Telefones:</label><br>
+            <input type="text" id="optText" name="optText">
+            <br>
+            <p onclick="addopt()" style="cursor: pointer; color: blue">Adicionar</p>
+            <br>
+            <textarea readonly rows="10" cols="20" id="telefones" name="telefones">{% if funcionario.id %}{% for fone in funcionario.TELEFONE.all %}{{ fone.TELEFONE }}
+{% endfor %}{% endif %}
+            </textarea>
+        <div class="submit-row">
+            <input type="submit" value="Salvar" class="default" name="_save">
+            <input type="submit" value="Salvar e adicionar outro(a)" name="_addanother">
+            <input type="submit" value="Salvar e continuar editando" name="_continue">
+        </div>
+    </form>
+</div>
+{% endblock %}

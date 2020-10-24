@@ -1,0 +1,193 @@
+{% extends "modelPage.html" %}
+{% load static %}
+{% block content %}
+
+    <div class="titulo">
+        <h1>Gerenciar Clientes</h1>
+    </div>
+<form method="post" action="submit">{% csrf_token %}
+    <div class="linhaAbas" >
+        <div style="width: 5%"></div>
+        <div class="btnpressionado" onclick="trocaaba('a1')" id="aba1" >
+            Dados Básicos
+        </div>
+        <div class="btnnormal" onclick="trocaaba('a2')" id="aba2" >
+            Locais
+        </div>
+        <div class="btnnormal" onclick="trocaaba('a3')" id="aba3" >
+            Contatos
+        </div>
+        <div style="color:white; padding: 15px;">
+            {{ cliente.NOME }}
+        </div>
+
+    </div>
+
+    <div id="a1" style="display: block;" class="a1">
+
+            <input value="{{cliente.id}}" type="number" name="id_cliente" maxlength="20" hidden>
+            <div class="cxinputg">
+                <label class="" for="NOME" id="lblnome">NOME:</label>
+                <br>
+                <input onchange="SalvaCli()" class="caixaalta" value="{{ cliente.NOME }}" autocomplete="on" type="text" name="NOME" id = "NOME" maxlength="100">
+            </div>
+            <div class="cxinputp">
+                <label>PF OU PJ:</label>
+                <br>
+                <select onchange="SalvaCli()" name="PFPJ">
+                    {% if cliente.PFPJ == 'F' %}
+                        <option value="F" selected>Física</option>
+                        <option value="J">Jurídica</option>
+                    {% else %}
+                        <option value="F" >Física</option>
+                        <option value="J" selected>Jurídica</option>
+                    {% endif %}
+                </select>
+            </div>
+            <div class="cxinputp">
+                <label>CPF/CNPJ:</label>
+                <br>
+                <input onchange="SalvaCli()" value="{{cliente.CPFCNPJ}}" type="text" name="CPFCNPJ" maxlength="20">
+            </div>
+            <div class="cxinputm">
+                <label class="" for="EMAIL1" id="lblemail1">EMAIL1:</label>
+                <br>
+                <input onchange="SalvaCli()" class="caixabaixa" value="{{cliente.EMAIL1}}" type="email" name="EMAIL1" id="EMAIL1" maxlength="60">
+            </div>
+            <div class="cxinputm">
+                <label class="" for="EMAIL2" id="lblemail2">EMAIL1:</label>
+                <br>
+                <input onchange="SalvaCli()" class="caixabaixa" value="{{cliente.EMAIL2}}" type="email" name="EMAIL2" class="vTextField" maxlength="60" id="EMAIL2">
+            </div>
+            <div class="cxinputalto">
+                <br><br>
+                <label>TELEFONES:</label><br>
+                <input onchange="SalvaCli()" type="text" id="optText" name="optText">
+                <br>
+                <p onclick="addopt('telefones', 'optText')" style="cursor: pointer; color: blue">Adicionar</p>
+                <textarea onchange="SalvaCli()" rows="6" cols="20" id="telefones" name="telefones">{% if cliente.id %}{% for fone in cliente.TELEFONE.all %}{{ fone.TELEFONE }}
+    {% endfor %}{% endif %}
+                </textarea>
+                <div hidden><input type="text" id="salvarcliente" name="salvarcliente"  value="{{cliente.getSalvarCliente}}"></div>
+
+            </div>
+            <br><br> <br><br> <br><br>
+            <input type="submit" value="Salvar e retornar para listagem" class="btn" name="_save">
+            <input type="submit" value="Salvar e adicionar outro(a)" class="btn" name="_addanother">
+            <input type="submit" value="Salvar e continuar" class="btn" name="_continue">
+    </div>
+        <script type="text/javascript">
+            window.onload = function() {
+                getidlocalidcontato();
+            }
+        </script>
+    <div id="a2" class="a2">
+
+        <div style="width: 75%;display: inline-block;">
+            <label>Locais Cadastrados:</label>
+            <select value="{{cliente.LOCAL}}" id="Locais" onchange="window.location='/cadastrar_cliente/?id={{cliente.id}}&idlocal='+this.value" style="background-color: #ffcdd2;">
+                <option value="0">***Selecione aqui para cadastrar novo ou escolha um local para editar.</option>
+                {% if cliente.id %}
+                    {% for l in cliente.getLocais %}
+                        <option value="{{ l.id }}">{{ l }}</option>
+                    {% endfor %}
+                {% endif %}
+            </select>
+            <br>
+        </div>
+        <div style="width: 20%;display: inline-block;">
+            <input value="0" hidden name="id_clientelocal" id="id_clientelocal">
+            <br>
+        </div>
+        <div class="cxinputp">
+            <label class="" for="CEP" id="lblcep">CEP:</label><br>
+            <input value="{{cliente.getLocal.CEP}}" type="text" name="CEP"  maxlength="20"  id="CEP">
+        </div>
+        <div class="cxinputm">
+              <label class="" for="LOGRADOURO" id="lbllogradouro">LOGRADOURO:</label>
+              <input class="caixaalta" value="{{cliente.getLocal.LOGRADOURO}}" type="text" name="LOGRADOURO"  maxlength="100"  id="LOGRADOURO">
+        </div>
+        <div class="cxinputp">
+            <label class="" for="NUMERO" id="lblnumero">NÚMERO:</label>
+            <input value="{{cliente.getLocal.NUMERO}}" type="text" name="NUMERO" maxlength="10"  id="NUMERO">
+        </div>
+        <div class="cxinputm">
+            <label for="REFERENCIA">PONTO DE REFERÊNCIA:</label>
+            <input class="caixaalta" value="{{cliente.getLocal.REFERENCIA}}" type="text" name="REFERENCIA" maxlength="100" id="REFERENCIA">
+        </div>
+        <div class="cxinputm">
+            <label for="COORDENADAS">GEOCOORDENADAS:</label>
+            <input value="{{cliente.getLocal.COORDENADAS}}" type="text" name="COORDENADAS" maxlength="100" id="COORDENADAS">
+        </div>
+        <div class="cxinputm">
+            <label for="AREA">ÁREA TOTAL(m²):</label>
+            <input value="{{cliente.getLocal.AREA}}" type="number" name="AREA" maxlength="100" id="AREA">
+        </div>
+        <div class="cxinputm">
+            <label for="COMPARTIMENTOS" id="lblcompartimentos">Nº DE COMPARTIMENTOS:</label>
+            <input value="{{cliente.getLocal.COMPARTIMENTOS}}" type="number" name="COMPARTIMENTOS" id="COMPARTIMENTOS">
+        </div>
+        <div class="cxinputm">
+            <label for="BANHEIROS">Nº DE BANHEIROS:</label>
+            <input value="{{cliente.getLocal.BANHEIROS}}" type="number" name="BANHEIROS" class="vTextField" maxlength="100" id="BANHEIROS">
+        </div>
+        <div class="cxinputg">
+            <label for="OBS">OBSERVAÇÕES:</label>
+            <input value="{{cliente.getLocal.OBS}}" type="text" name="OBS" class="vTextField caixaalta" maxlength="200" id="OBS">
+        </div>
+        <br><br> <br><br> <br><br>
+        <input type="submit" value="Salvar" class="btn" name="_savelocal">
+        <input type="submit" value="Salvar e adicionar outro(a)" class="btn" name="_addanotherlocal">
+        <input type="button" value="Excluir" onclick="confirma('Tem certeza que deseja apagar este local?', '/cadastrar_local/delete/{{cliente.id}}/{{cliente.LOCAL}}/')"  class="btn" name="_excluir">
+        {% with url=request.get_full_path %}
+            <div hidden id="url">
+                {{ url }}
+            </div>
+        {% endwith %}
+    </div>
+
+    <div id="a3"  class="a3">
+        <div style="width: 75%;display: inline-block;">
+            <label>Contatos Cadastrados:</label>
+            <select value="{{cliente.CONTATO}}" id="Contatos" onchange="window.location='/cadastrar_cliente/?id={{cliente.id}}&idcontato='+this.value" style="background-color: #ffcdd2;">
+                <option value="0">***Selecione aqui para cadastrar novo ou escolha um contato para editar.</option>
+                {% if cliente.id %}
+                    {% for c in cliente.getContatos %}
+                        <option value="{{ c.id }}">{{ c }}</option>
+                    {% endfor %}
+                {% endif %}
+            </select>
+            <br>
+        </div>
+        <div style="width: 20%;display: inline-block;">
+            <input value="0" hidden name="id_clientecontato" id="id_clientecontato">
+            <br>
+        </div>
+            <div class="cxinputm">
+                <label class="" for="NOMECONTATO" id="lblnomecontato">NOME:</label>
+                <br>
+                <input value="{{cliente.getContato.NOME}}" class="caixaalta" autocomplete="off" type="text" name="NOMECONTATO" id="NOMECONTATO"  maxlength="100">
+            </div>
+            <div class="cxinputm">
+                <label>DEPARTAMENTO:</label>
+                <br>
+                <input value="{{cliente.getContato.DEPARTAMENTO}}" class="caixaalta" autocomplete="on" type="text" name="DEPARTAMENTO"  maxlength="100">
+            </div>
+            <div class="cxinputalto">
+                <label>TELEFONES:</label><br>
+                <input type="text" id="optTextC" name="optTextC">
+                <br>
+                <p onclick="addopt('telefonesC', 'optTextC')" style="cursor: pointer; color: blue">Adicionar</p>
+
+                <textarea onchange="SalvaCli()" rows="6" cols="20" id="telefonesC" name="telefonesC">{% if cliente.id %}{% for fone in cliente.getTelefonesContatos %}{{ fone.TELEFONE }}
+    {% endfor %}{% endif %}
+                </textarea>
+            </div>
+            <br><br> <br><br> <br><br>
+            <input type="submit" value="Salvar" class="btn" name="_savecontato">
+            <input type="submit" value="Salvar e adicionar outro(a)" class="btn" name="_addanothercontato">
+            <input type="button" value="Excluir" onclick="confirma('Tem certeza que deseja apagar este local?', '/cadastrar_local/delete/{{cliente.id}}/{{cliente.LOCAL}}/')"  class="btn" name="_excluir">
+    </div>
+</form>
+
+{% endblock %}
