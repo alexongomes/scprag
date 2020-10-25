@@ -52,6 +52,13 @@ class Cliente(models.Model):
     def setContato(self, c):
         self.CONTATO = c
 
+    def getUfSeletec(self, uf):
+        l = self.getLocal()
+        if uf == l.ESTADO:
+            return 'Selected'
+        else:
+            return ''
+
     def getContato(self):
         return Contato.objects.get(id=self.CONTATO)
 
@@ -102,6 +109,38 @@ class Local(models.Model):
     CEP = models.CharField(max_length=20)
     LOGRADOURO = models.CharField(max_length=100)
     NUMERO = models.CharField(max_length=10, verbose_name='NÚMERO')
+    BAIRRO = models.CharField(max_length=70, blank=True, null=True)
+    CIDADE = models.CharField(max_length=50, blank=True, null= True)
+    ESTADO_lista = (
+        ('AC', 'Acre'),
+        ('AL', 'Alagoas'),
+        ('AP', 'Amapá'),
+        ('AM', 'Amazonas'),
+        ('BA', 'Bahia'),
+        ('CE', 'Ceará'),
+        ('ES', 'Espírito Santo'),
+        ('GO', 'Goiás'),
+        ('MA', 'Maranhão'),
+        ('MT', 'Mato Grosso'),
+        ('MS', 'Mato Grosso do Sul'),
+        ('MG', 'Minas Gerais'),
+        ('PA', 'Pará'),
+        ('PB', 'Paraíba'),
+        ('PR', 'Paraná'),
+        ('PE', 'Pernambuco'),
+        ('PI', 'Piauí'),
+        ('RJ', 'Rio de Janeiro'),
+        ('RN', 'Rio Grande do Norte'),
+        ('RS', 'Rio Grande do Sul'),
+        ('RD', 'Rondônia'),
+        ('RR', 'Roraima'),
+        ('SC', 'Santa Catarina'),
+        ('SP', 'São Paulo'),
+        ('SE', 'Sergipe'),
+        ('TO', 'Tocantins'),
+        ('DF', 'Distrito Federal'),
+    )
+    ESTADO = models.CharField(max_length=2, blank=True, null=True, choices=ESTADO_lista)
     REFERENCIA = models.CharField(null=True, blank=True, max_length=100, verbose_name='PONTO DE REFERÊNCIA')
     COORDENADAS = models.CharField(null=True, blank=True, max_length=100, verbose_name='COORDENADAS DE LOCALIZAÇÃO')
     ID_CLIENTE = models.ForeignKey(Cliente, on_delete=models.PROTECT, verbose_name='CLIENTE')

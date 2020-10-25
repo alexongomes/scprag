@@ -34,7 +34,7 @@ urlpatterns = [
     path('cadastrar_cliente/delete/<int:id_cliente>/', views.delete_cliente),
 
     path('cadastrar_local/delete/<int:id_cliente>/<int:id_local>/', views.delete_local),
-    path('cadastrar_local/delete/<int:id_cliente>/<int:id_contato>/', views.delete_contato),
+    path('cadastrar_contato/delete/<int:id_cliente>/<int:id_contato>/', views.delete_contato),
 
     path('funcionarios/', views.listaFuncionario),
     path('filtro_funcionario/', views.listaFuncionario),

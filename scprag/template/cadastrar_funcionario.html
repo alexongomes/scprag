@@ -1,35 +1,43 @@
 {% extends "modelPage.html" %}
 
 {% block content %}
-    <h2>Cadastrar Funcionário</h2>
-    <br><br>
- <div id="content-main">
-    <form method="post" action="submit">{% csrf_token %}
-        <div>
-            <input value="{{funcionario.id}}" type="number" name="id_funcionario" maxlength="20" hidden>
-            <label class="required" for="NOME">NOME:</label><br>
-            <input value="{{funcionario.NOME}}" type="text" name="NOME" class="vTextField" maxlength="100" required id="NOME">
-            <br><br>
-            <label for="EMAIL">EMAIL:</label><br>
-            <input value="{{funcionario.EMAIL}}" type="email" name="EMAIL" class="vTextField" maxlength="50" id="EMAIL">
-            <br><br>
-            <label for="DATA_NASCIMENTO">DATA NASCIMENTO:</label><br>
-            <input value="{{funcionario.getDATA_NASCIMENTO}}" type="date" name="DATA_NASCIMENTO" class="vDateField" size="10" id="DATA_NASCIMENTO">
-            <br><br>
+     <div class="titulo">
+        <h1>Gerenciar Funcionários</h1>
+    </div>
+<div class="linhaAbas" >
 
-            <label>Telefones:</label><br>
-            <input type="text" id="optText" name="optText">
+</div>
+<form method="post" name="form1" action="submit">{% csrf_token %}
+    <div id="a1" style="display: block;" class="a1">
+        <input value="{{funcionario.id}}" type="number" name="id_funcionario" maxlength="20" hidden>
+         <div class="cxinputg">
+            <label class="required" for="NOME" id="lblnome">NOME:</label>
             <br>
-            <p onclick="addopt()" style="cursor: pointer; color: blue">Adicionar</p>
+            <input required class="caixaalta" value="{{ funcionario.NOME }}" autocomplete="on" type="text" name="NOME" id = "NOME" maxlength="100">
+        </div>
+        <div class="cxinputm">
+            <label for="EMAIL">EMAIL:</label><br>
+            <input value="{{funcionario.EMAIL}}" type="email" name="EMAIL" class="caixabaixa" maxlength="50" id="EMAIL">
+        </div>
+        <div class="cxinputm">
+            <label for="DATA_NASCIMENTO">DATA NASCIMENTO:</label><br>
+            <input value="{{funcionario.getDATA_NASCIMENTO}}" type="date" name="DATA_NASCIMENTO" size="10" id="DATA_NASCIMENTO">
+        </div>
+        <div class="cxinputalto"
+            <label>Telefones:</label><br>
+            <input type="text" onKeyPress="MascaraTelefone(form1.optText)" id="optText" name="optText">
+            <br>
+            <p onclick="addopt('telefones', 'optText')" style="cursor: pointer; color: blue">Adicionar</p>
             <br>
             <textarea readonly rows="10" cols="20" id="telefones" name="telefones">{% if funcionario.id %}{% for fone in funcionario.TELEFONE.all %}{{ fone.TELEFONE }}
 {% endfor %}{% endif %}
             </textarea>
-        <div class="submit-row">
-            <input type="submit" value="Salvar" class="default" name="_save">
-            <input type="submit" value="Salvar e adicionar outro(a)" name="_addanother">
-            <input type="submit" value="Salvar e continuar editando" name="_continue">
         </div>
-    </form>
-</div>
+    <br><br> <br><br> <br><br><br><br><br><br>
+        <input type="submit" value="Salvar" class="btn" name="_save">
+        <input type="submit" class="btn" value="Salvar e adicionar outro(a)" name="_addanother">
+        <input type="submit" class="btn" value="Salvar e continuar editando" name="_continue">
+<br>
+</form>
+<br>
 {% endblock %}

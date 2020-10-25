@@ -116,6 +116,9 @@ def submit_cliente(request):
             cep=request.POST.get('CEP')
             logradouro=request.POST.get('LOGRADOURO')
             numero=request.POST.get('NUMERO')
+            bairro = request.POST.get('BAIRRO')
+            cidade = request.POST.get('CIDADE')
+            estado = request.POST.get('ESTADO')
             referencia=request.POST.get('REFERENCIA')
             coordenadas=request.POST.get('COORDENADAS')
             area=request.POST.get('AREA')
@@ -127,6 +130,9 @@ def submit_cliente(request):
                 local.CEP = cep
                 local.LOGRADOURO = logradouro.upper()
                 local.NUMERO = numero
+                local.BAIRRO = bairro
+                local.CIDADE = cidade
+                local.ESTADO = estado
                 local.REFERENCIA = referencia.upper()
                 local.COORDENADAS = coordenadas
                 local.AREA = area
@@ -139,6 +145,9 @@ def submit_cliente(request):
                 Local.objects.create(CEP=cep,
                                    LOGRADOURO=logradouro.upper(),
                                    NUMERO=numero,
+                                   BAIRRO=bairro,
+                                   CIDADE = cidade,
+                                   ESTADO = estado,
                                    REFERENCIA=referencia.upper(),
                                    COORDENADAS=coordenadas,
                                    AREA=area,
@@ -164,8 +173,8 @@ def submit_cliente(request):
             cliente.NOME = nome.upper()
             cliente.PFPJ = pfpj
             cliente.CPFCNPJ = cpfcnpj
-            cliente.EMAIL1 = email1
-            cliente.EMAIL2 = email2
+            cliente.EMAIL1 = email1.lower()
+            cliente.EMAIL2 = email2.lower()
             cliente.save()
             cliente.setSalvarCliente('salvo')
             Telefone.objects.filter(cliente=id_cliente).delete()
@@ -173,8 +182,8 @@ def submit_cliente(request):
             Cliente.objects.create(NOME=nome.upper(),
                                PFPJ=pfpj,
                                CPFCNPJ=cpfcnpj,
-                               EMAIL1=email1,
-                               EMAIL2=email2)
+                               EMAIL1=email1.lower(),
+                               EMAIL2=email2.lower())
             cliente = Cliente.objects.last()
             cliente.setSalvarCliente('salvo')
         for telefone in telefones:
@@ -246,11 +255,10 @@ def submit_funcionario(request):
         email = request.POST.get('EMAIL')
         data_nascimento = request.POST.get('DATA_NASCIMENTO')
         telefones = request.POST.get('telefones').split('\r\n')
-
         if id_funcionario:
             funcionario = Funcionario.objects.get(id=id_funcionario)
-            funcionario.NOME = nome
-            funcionario.EMAIL = email
+            funcionario.NOME = nome.upper()
+            funcionario.EMAIL = email.lower()
             funcionario.DATA_NASCIMENTO = data_nascimento
             funcionario.save()
             Telefone.objects.filter(funcionario=id_funcionario).delete()
@@ -262,8 +270,8 @@ def submit_funcionario(request):
             #    EMAIL1=email1,
             #    EMAIL2=email2)
         else:
-            Funcionario.objects.create(NOME=nome,
-                               EMAIL=email,
+            Funcionario.objects.create(NOME=nome.upper(),
+                               EMAIL=email.lower(),
                                DATA_NASCIMENTO=data_nascimento)
             funcionario = Funcionario.objects.last()
         for telefone in telefones:
@@ -271,15 +279,13 @@ def submit_funcionario(request):
             if (len(t.TELEFONE.strip())>3 ):
                 t.save()
                 funcionario.TELEFONE.add(t)
-
         if btn1 == 'Salvar':
             return redirect('/funcionarios/')
         elif btn2 == 'Salvar e adicionar outro(a)':
             return render(request, 'cadastrar_funcionario.html')
         else:
-            dados = {}
-            dados['funcionario'] = Funcionario.objects.get(id=funcionario.id)
-            return render(request, 'cadastrar_funcionario.html', dados)
+            return redirect('/cadastrar_funcionario/?id=' + str(funcionario.id))
+
 
 @login_required(login_url='/loginscprag/')
 def delete_funcionario(request, id_funcionario):

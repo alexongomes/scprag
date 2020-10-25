@@ -5,7 +5,7 @@
     <div class="titulo">
         <h1>Gerenciar Clientes</h1>
     </div>
-<form method="post" action="submit">{% csrf_token %}
+<form method="post" name="form1" action="submit">{% csrf_token %}
     <div class="linhaAbas" >
         <div style="width: 5%"></div>
         <div class="btnpressionado" onclick="trocaaba('a1')" id="aba1" >
@@ -24,7 +24,6 @@
     </div>
 
     <div id="a1" style="display: block;" class="a1">
-
             <input value="{{cliente.id}}" type="number" name="id_cliente" maxlength="20" hidden>
             <div class="cxinputg">
                 <label class="" for="NOME" id="lblnome">NOME:</label>
@@ -34,7 +33,7 @@
             <div class="cxinputp">
                 <label>PF OU PJ:</label>
                 <br>
-                <select onchange="SalvaCli()" name="PFPJ">
+                <select onchange="SalvaCli()" name="PFPJ" id="PFPJ">
                     {% if cliente.PFPJ == 'F' %}
                         <option value="F" selected>Física</option>
                         <option value="J">Jurídica</option>
@@ -44,10 +43,10 @@
                     {% endif %}
                 </select>
             </div>
-            <div class="cxinputp">
+            <div class="cxinputm">
                 <label>CPF/CNPJ:</label>
                 <br>
-                <input onchange="SalvaCli()" value="{{cliente.CPFCNPJ}}" type="text" name="CPFCNPJ" maxlength="20">
+                <input onchange="SalvaCli()" onBlur="validajf(form1.CPFCNPJ);" onKeyPress="MascaraCNPJ(form1.CPFCNPJ);" value="{{cliente.CPFCNPJ}}" type="text" name="CPFCNPJ" maxlength="20">
             </div>
             <div class="cxinputm">
                 <label class="" for="EMAIL1" id="lblemail1">EMAIL1:</label>
@@ -60,9 +59,8 @@
                 <input onchange="SalvaCli()" class="caixabaixa" value="{{cliente.EMAIL2}}" type="email" name="EMAIL2" class="vTextField" maxlength="60" id="EMAIL2">
             </div>
             <div class="cxinputalto">
-                <br><br>
                 <label>TELEFONES:</label><br>
-                <input onchange="SalvaCli()" type="text" id="optText" name="optText">
+                <input onchange="SalvaCli()" onKeyPress="MascaraTelefone(form1.optText)" type="text" id="optText" name="optText">
                 <br>
                 <p onclick="addopt('telefones', 'optText')" style="cursor: pointer; color: blue">Adicionar</p>
                 <textarea onchange="SalvaCli()" rows="6" cols="20" id="telefones" name="telefones">{% if cliente.id %}{% for fone in cliente.TELEFONE.all %}{{ fone.TELEFONE }}
@@ -99,9 +97,12 @@
             <input value="0" hidden name="id_clientelocal" id="id_clientelocal">
             <br>
         </div>
-        <div class="cxinputp">
+        <div class="cxinputm">
             <label class="" for="CEP" id="lblcep">CEP:</label><br>
-            <input value="{{cliente.getLocal.CEP}}" type="text" name="CEP"  maxlength="20"  id="CEP">
+            <input value="{{cliente.getLocal.CEP}}" STYLE="width: 74%" onKeyPress="MascaraCep(form1.CEP)" type="text" name="CEP"  maxlength="20"  id="CEP">
+            <div class="tooltip"> &#128269;
+                <span onclick="pesquisacep();" style="cursor: pointer;" class="tooltiptext">Localizar pelo cep</span>
+            </div>
         </div>
         <div class="cxinputm">
               <label class="" for="LOGRADOURO" id="lbllogradouro">LOGRADOURO:</label>
@@ -110,6 +111,47 @@
         <div class="cxinputp">
             <label class="" for="NUMERO" id="lblnumero">NÚMERO:</label>
             <input value="{{cliente.getLocal.NUMERO}}" type="text" name="NUMERO" maxlength="10"  id="NUMERO">
+        </div>
+        <div class="cxinputm">
+            <label class="" for="BAIRRO" id="lblbairro">BAIRRO:</label>
+            <input value="{{cliente.getLocal.BAIRRO}}" type="text" name="BAIRRO" maxlength="70"  id="BAIRRO">
+        </div>
+        <div class="cxinputm">
+            <label class="" for="CIDADE" id="lblcidade">CIDADE:</label>
+            <input value="{{cliente.getLocal.CIDADE}}" type="text" name="CIDADE" maxlength="50"  id="CIDADE">
+        </div>
+        <div class="cxinputp">
+            <label>UF:</label>
+            <select name="ESTADO" id="ESTADO">
+                <option VALUE=""></option>
+                <option VALUE="AC" {% if cliente.getLocal.ESTADO == 'AC' %} {{ 'selected' }} {% else %} {{ '' }}{% endif %} >AC</option>
+                <option VALUE="AL" {% if cliente.getLocal.ESTADO == 'AL' %} {{ 'selected' }} {% else %} {{ '' }}{% endif %} >AL</option>
+                <option VALUE="AC" {% if cliente.getLocal.ESTADO == 'AP' %} {{ 'selected' }} {% else %} {{ '' }}{% endif %} >AP</option>
+                <option VALUE="AM" {% if cliente.getLocal.ESTADO == 'AM' %} {{ 'selected' }} {% else %} {{ '' }}{% endif %} >AM</option>
+                <option VALUE="BA" {% if cliente.getLocal.ESTADO == 'BA' %} {{ 'selected' }} {% else %} {{ '' }}{% endif %} >BA</option>
+                <option VALUE="CE" {% if cliente.getLocal.ESTADO == 'CE' %} {{ 'selected' }} {% else %} {{ '' }}{% endif %} >CE</option>
+                <option VALUE="ES" {% if cliente.getLocal.ESTADO == 'ES' %} {{ 'selected' }} {% else %} {{ '' }}{% endif %} >ES</option>
+                <option VALUE="GO" {% if cliente.getLocal.ESTADO == 'GO' %} {{ 'selected' }} {% else %} {{ '' }}{% endif %} >GO</option>
+                <option VALUE="MA" {% if cliente.getLocal.ESTADO == 'MA' %} {{ 'selected' }} {% else %} {{ '' }}{% endif %} >MA</option>
+                <option VALUE="MT" {% if cliente.getLocal.ESTADO == 'MT' %} {{ 'selected' }} {% else %} {{ '' }}{% endif %} >MG</option>
+                <option VALUE="MS" {% if cliente.getLocal.ESTADO == 'MS' %} {{ 'selected' }} {% else %} {{ '' }}{% endif %} >MS</option>
+                <option VALUE="MG" {% if cliente.getLocal.ESTADO == 'MG' %} {{ 'selected' }} {% else %} {{ '' }}{% endif %} >MG</option>
+                <option VALUE="PA" {% if cliente.getLocal.ESTADO == 'PA' %} {{ 'selected' }} {% else %} {{ '' }}{% endif %} >PA</option>
+                <option VALUE="PB" {% if cliente.getLocal.ESTADO == 'PB' %} {{ 'selected' }} {% else %} {{ '' }}{% endif %} >PB</option>
+                <option VALUE="PR" {% if cliente.getLocal.ESTADO == 'PR' %} {{ 'selected' }} {% else %} {{ '' }}{% endif %} >PR</option>
+                <option VALUE="PE" {% if cliente.getLocal.ESTADO == 'PE' %} {{ 'selected' }} {% else %} {{ '' }}{% endif %} >PE</option>
+                <option VALUE="PI" {% if cliente.getLocal.ESTADO == 'PI' %} {{ 'selected' }} {% else %} {{ '' }}{% endif %} >PI</option>
+                <option VALUE="RJ" {% if cliente.getLocal.ESTADO == 'RJ' %} {{ 'selected' }} {% else %} {{ '' }}{% endif %} >RJ</option>
+                <option VALUE="RN" {% if cliente.getLocal.ESTADO == 'RN' %} {{ 'selected' }} {% else %} {{ '' }}{% endif %} >RN</option>
+                <option VALUE="RS" {% if cliente.getLocal.ESTADO == 'RS' %} {{ 'selected' }} {% else %} {{ '' }}{% endif %} >RS</option>
+                <option VALUE="RD" {% if cliente.getLocal.ESTADO == 'RD' %} {{ 'selected' }} {% else %} {{ '' }}{% endif %} >RD</option>
+                <option VALUE="RR" {% if cliente.getLocal.ESTADO == 'RR' %} {{ 'selected' }} {% else %} {{ '' }}{% endif %} >RO</option>
+                <option VALUE="SC" {% if cliente.getLocal.ESTADO == 'SC' %} {{ 'selected' }} {% else %} {{ '' }}{% endif %} >SC</option>
+                <option VALUE="SP" {% if cliente.getLocal.ESTADO == 'SP' %} {{ 'selected' }} {% else %} {{ '' }}{% endif %} >SP</option>
+                <option VALUE="SE" {% if cliente.getLocal.ESTADO == 'SE' %} {{ 'selected' }} {% else %} {{ '' }}{% endif %} >SE</option>
+                <option VALUE="TO" {% if cliente.getLocal.ESTADO == 'TO' %} {{ 'selected' }} {% else %} {{ '' }}{% endif %} >TO</option>
+                <option VALUE="DF" {% if cliente.getLocal.ESTADO == 'DF' %} {{ 'selected' }} {% else %} {{ '' }}{% endif %} >DF</option>
+            </select>
         </div>
         <div class="cxinputm">
             <label for="REFERENCIA">PONTO DE REFERÊNCIA:</label>
@@ -186,7 +228,7 @@
             <br><br> <br><br> <br><br>
             <input type="submit" value="Salvar" class="btn" name="_savecontato">
             <input type="submit" value="Salvar e adicionar outro(a)" class="btn" name="_addanothercontato">
-            <input type="button" value="Excluir" onclick="confirma('Tem certeza que deseja apagar este local?', '/cadastrar_local/delete/{{cliente.id}}/{{cliente.LOCAL}}/')"  class="btn" name="_excluir">
+            <input type="button" value="Excluir" onclick="confirma('Tem certeza que deseja apagar este contato?', '/cadastrar_contato/delete/{{cliente.id}}/{{cliente.CONTATO}}/')"  class="btn" name="_excluir">
     </div>
 </form>
 
